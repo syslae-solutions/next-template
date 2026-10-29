@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Credentials } from "@/domains/auth/types";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export function LoginForm() {
@@ -16,7 +16,8 @@ export function LoginForm() {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<Credentials>({ defaultValues: { email: "", password: "" } });
+    reset,
+  } = useForm<Credentials>();
 
   const onSubmit = async (data: Credentials) => {
     setError("");
@@ -27,18 +28,27 @@ export function LoginForm() {
         redirect: false,
       });
       if (result?.error) {
-        setError(
-          "Não foi possível entrar. Confira seu email e senha e tente novamente."
-        );
+        setError(result.error);
         return;
       }
-      router.replace("/dashboard");
-      router.refresh();
+      router.push("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
       setError("Ocorreu um erro ao fazer login. Tente novamente.");
     }
   };
+
+  useEffect(() => {
+    if (
+      process.env.NEXT_PUBLIC_MODE === "demo" ||
+      process.env.NEXT_PUBLIC_MODE === "dev"
+    ) {
+      reset({
+        email: "admin@syslae.com",
+        password: "password",
+      });
+    }
+  }, [reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
@@ -52,7 +62,6 @@ export function LoginForm() {
           id="email"
           control={control}
           type="email"
-          autoComplete="username"
           placeholder="seu@email.com"
           rules={{ required: "Email é obrigatório" }}
           label="Email"
@@ -63,7 +72,6 @@ export function LoginForm() {
           id="password"
           control={control}
           type="password"
-          autoComplete="current-password"
           placeholder="********"
           rules={{ required: "Senha é obrigatória" }}
           label="Senha"

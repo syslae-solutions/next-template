@@ -8,12 +8,4 @@ const usersKeys = {
 
 export const queryKeys = {
   users: usersKeys,
-  offers: {
-    all: ["offers"] as const,
-    list: (params?: Params) => ["offers", "list", params ?? {}] as const,
-  },
-  whatsapp: {
-    session: ["whatsapp", "session"] as const,
-    groups: ["whatsapp", "groups"] as const,
-  },
 };

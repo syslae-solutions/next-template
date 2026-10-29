@@ -66,14 +66,11 @@ export function ControlledCombobox<FormType extends FieldValues>({
       control={control}
       name={name}
       rules={rules}
-      render={({
-        field: { onChange, onBlur, value, ref },
-        fieldState: { error },
-      }) => {
+      render={({ field: { onChange, value }, fieldState: { error } }) => {
         const selectedOption = options.find((option) => option.id === value);
 
         return (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             <div className="flex items-center justify-between">
               <Label htmlFor={name} className="block text-sm font-medium">
                 {label.replace("*", "")}
@@ -86,46 +83,34 @@ export function ControlledCombobox<FormType extends FieldValues>({
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
-                  id={name}
-                  ref={ref}
-                  type="button"
-                  onBlur={onBlur}
-                  aria-invalid={!!error}
-                  aria-required={!!rules?.required}
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
                   disabled={disabled}
+                  onClick={() => setOpen(!open)}
                   className={cn(
-                    "border-input text-muted-foreground min-h-11 justify-between gap-3 rounded-lg border px-4 py-3",
+                    "text-muted-foreground justify-between",
                     error ? "border-destructive" : "",
                     className
                   )}
                   style={{ width: width }}
                 >
-                  <span className="min-w-0 truncate text-left">
-                    {loading
-                      ? "Carregando..."
-                      : selectedOption?.name || placeholder}
-                  </span>
+                  {loading
+                    ? "Carregando..."
+                    : selectedOption?.name || placeholder}
                   <ChevronsUpDown className="h-4 w-4 shrink-0" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent
-                className="border-border max-w-[calc(100vw-2rem)] rounded-xl border p-2 shadow-lg"
-                style={{ width: "var(--radix-popover-trigger-width)" }}
-              >
-                <Command className="w-full gap-2 p-1">
+              <PopoverContent className="p-0" style={{ width: width }}>
+                <Command className="w-(--radix-popover-trigger-width)">
                   <CommandInput placeholder={searchPlaceholder} />
-                  <CommandList className="max-h-60 overflow-y-auto px-1 pb-1">
+                  <CommandList className="max-h-60 overflow-y-auto">
                     <CommandEmpty>{noOptionsMessage}</CommandEmpty>
-                    <CommandGroup className="p-0 [&_[cmdk-group-items]]:flex [&_[cmdk-group-items]]:flex-col [&_[cmdk-group-items]]:gap-2">
+                    <CommandGroup className="">
                       {options.map((option) => (
                         <CommandItem
-                          className="data-[selected=true]:border-border rounded-lg border border-transparent px-3 py-3"
                           key={option.id}
-                          value={String(option.id)}
-                          keywords={[option.name]}
+                          value={option.name}
                           onSelect={() => {
                             onChange(value === option.id ? "" : option.id);
                             setOpen(false);

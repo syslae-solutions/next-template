@@ -4,12 +4,15 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { getServerSession } from "@/lib/next-auth/auth";
+import { authOptions } from "@/lib/next-auth/auth";
+import { getServerSession } from "next-auth";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { Nav } from "./nav";
+import { images } from "@/assets/images";
 
 export async function AppSidebar() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session?.user) {
     redirect("/login");
@@ -21,7 +24,7 @@ export async function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="border-sidebar-border flex h-16 justify-center border-b">
         <div className="flex items-center justify-center gap-6 px-2">
-          <span className="text-xl font-semibold">PromoFlow</span>
+          <Image src={images.logo} alt="Logo" width={100} />
         </div>
       </SidebarHeader>
       <SidebarContent>
