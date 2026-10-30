@@ -14,6 +14,8 @@ Existing code is also a source of truth. Before creating a new pattern, search f
 
 ---
 
+
+
 ## Core principles
 
 Preserve the architecture defined by this template.
