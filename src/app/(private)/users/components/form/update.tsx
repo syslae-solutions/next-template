@@ -19,7 +19,7 @@ interface UpdateUserFormProps {
 export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
   const { data: session } = useSession();
   const isCurrentUser = session?.user.id === user.id;
-  const { control, handleSubmit } = useForm<UpdateUser>({
+  const { control, handleSubmit, formState: { isDirty } } = useForm<UpdateUser>({
     defaultValues: {
       name: user.name,
       email: user.email,
@@ -111,7 +111,7 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
         type="submit"
         className="mt-2 w-full"
         loading={isPending}
-        disabled={isPending}
+        disabled={isPending || !isDirty}
       >
         Salvar alterações
       </Button>
